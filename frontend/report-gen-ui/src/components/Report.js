@@ -11,10 +11,10 @@ const Report = ({ report, onDelete, onToggle }) => {
                 />
             </h3>
             <p>
-                {report.subject}
+                {report.sub}
             </p>
             <p>
-                {report.department}
+                {report.dept}
             </p>
 
         </div>
