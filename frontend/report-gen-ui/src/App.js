@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import Axios from 'axios';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Reports from './components/Reports';
 import Footer from './components/Footer';
@@ -8,19 +7,56 @@ import AddReportRequest from './components/AddReportRequest';
 function App() {
   const [showFrom, setshowForm] = useState(false);
   const [reports, setReports] = useState([])
+  useEffect(() => {
+    const requestOptions = {
+      method: 'GET',
+      headers: {'Content-type': 'Application/json'}
+    };
+    fetch('http://127.0.0.1:8000/v1/listreports/', requestOptions)
+    .then(response => response.json())
+    .then(data => setReports(data.results));
+  }, [])
 
-  const addForm = async (report) => {
-    const id = Math.floor(Math.random() * 1000) + 1
-    const newReport = {id, ...report}
-    setReports([...reports, newReport]) 
+  const fetchReport = async (id) => {
+    const res = await fetch(`http://127.0.0.1:8000/v1/getreport/${id}/`)
+      const data = await res.json()
+      return data
   }
 
-  const onDelete = (id) =>{
+  const addForm = (report) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: {'Content-type': 'application/json'},
+      body: JSON.stringify(report)
+    };
+    fetch('http://127.0.0.1:8000/v1/createreport/', requestOptions)
+    .then(response => response.json())
+    .then(data => setReports([...reports, data]))
+    // const id = Math.floor(Math.random() * 1000) + 1
+    // const newReport = {id, ...report}
+    // setReports([...reports, newReport]) 
+  }
+
+  const onDelete = async (id) =>{
+    await fetch(`http://127.0.0.1:8000/v1/getreport/${id}`, {
+      method: 'DELETE',
+    })
+
     setReports(reports.filter((report) => report.id !== id))
   }
 
-  const toggleStatus = (id) => {
-    setReports(reports.map((report) => report.id === id ? {...report, status: report.status === 1 ? 0 : 1 } : report))
+  const toggleStatus = async (id) => {
+    const reportToToggle = await fetchReport(id)
+    const updatedReport = {...reportToToggle, status: reportToToggle.status === 1 ? 0 : 1}
+
+    const requestOptions = {
+      method: 'patch',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(updatedReport)
+    }
+    fetch(`http://127.0.0.1:8000/v1/getreport/${id}/`, requestOptions)
+    .then(response => response.json())
+    .then(data => setReports(reports.map((report) => report.id === id ? {...report, status: data.status === 1 ? 0 : 1 } : report)))
   }
 
   return (

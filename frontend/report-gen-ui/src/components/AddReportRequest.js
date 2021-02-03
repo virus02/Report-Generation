@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 const AddReportRequest = ({ onAdd }) => {
     const [name, setName] = useState('');
-    const [sub, setSub] = useState('');
-    const [dept, setDept] = useState('');
+    const [subject, setSub] = useState('');
+    const [department, setDept] = useState('');
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -11,14 +11,14 @@ const AddReportRequest = ({ onAdd }) => {
         if(!name){
             alert('Please enter name');
         }
-        if(!sub){
+        if(!subject){
             alert('Please enter subject');
         }
-        if(!dept){
+        if(!department){
             alert('Please enter department');
         }
 
-        onAdd({name, sub, dept})
+        onAdd({name, subject, department})
 
         setName('');
         setSub('');
@@ -34,11 +34,11 @@ const AddReportRequest = ({ onAdd }) => {
             </div>
             <div className='form-control'>
                 <label>Subject</label>
-                <input type='text' value={sub} placeholder='Enter subject' onChange={(e) => setSub(e.target.value)} />
+                <input type='text' value={subject} placeholder='Enter subject' onChange={(e) => setSub(e.target.value)} />
             </div>
             <div className='form-control'>
                 <label>Department</label>
-                <input type='text' value={dept} placeholder='Enter department' onChange={(e) => setDept(e.target.value)} />
+                <input type='text' value={department} placeholder='Enter department' onChange={(e) => setDept(e.target.value)} />
             </div>
             <input type="submit" value="Save" className='btn btn-block' />
         </form>
